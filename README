@@ -1,0 +1,67 @@
+   ___ _             _       ___
+  / _ (_) __ _ _ __ | |_    / __\ __ ___   _____ ___
+ / /_\/ |/ _` | '_ \| __|  / /   / _` \ \ / / _ | __|
+/ /_\\| | (_| | | | | |_  / /___| (_| |\ V /  __|__ \
+\____/|_|\__,_|_| |_|\__| \____/ \__,_| \_/ \___|___/
+
+
+Overview
+=================================
+Giant Caves is a bukkit mod that creates giant underground caves in the world. The caves are generated
+using Perlin noise seeded by the world seed. Caves are unique to each world.
+
+Giant Caves is implemented as a bukkit block populator and is compatible with the vanilla world generator
+and most likely any world generation plugin that implements the chunk generator pattern. YMMV.
+
+
+Installation
+=================================
+Drop GiantCaves.jar into the bukkit plugin directory. It will create its own configuration file with
+default configuration options. By default, Giant Caves is configured to populate the default world called
+"world".
+
+
+Configuration
+=================================
+Within config.yml is a series of key/value pair blocks, one for each world under the "worlds:" key. To bind
+Giant Caves to a second world, copy the key/value pair block under the existing block.
+
+Below are extended descriptions of each of the configuration keys:
+
+  name   : world       The name of a world to apply giant caves
+                       This value must match the name of the world in the bukkit.yml file for Giant Caves to attach
+
+  sxz    : 200         # Horizontal stretch (larger number = wider cave)
+                       This parameter controls the horizontal stretch of the Perlin density map. Making this value
+                       larger will stretch the caves horizontally, increasing both the size of the caves and the
+                       spacing between them.
+
+  sy     : 100         # Vertical stretch (larger number = taller cave)
+                       This parameter controls the vertical stretch of the Perlin density map. Making this value
+                       larger will stretch the caves vertically.
+
+  cutoff : 62          Minimum Perlin density cutoff (-100 to 100)
+                       This parameter controls the Perlin density cutoff point between cave and not cave. Lowering
+                       this value will increase the overall volume and frequency of caves. Raising it will do the
+                       opposite. Values outside the range will be treated as the maximum or minimum values.
+
+  miny   : 6           Lower bound of cave zone
+                       The lowest block layer Giant Caves will populate.
+
+
+  maxy   : 64          Uppoer bound of cave zone
+                       The highest block layer Giant Caves will populate.
+
+
+  debug  : false       Turns on invert mode for experimenting with config values (true/false)
+                       When set to true, Giant Caves will fill caves with stone instead of air. Use this feature
+                       in combination with an empty world generator like Null Terrain to visualize the generated cave
+                       structures. You can use this visualization to experiment with how the different configuration
+                       parameters change the structure of the caves.
+
+                       Null Terrain - https://github.com/Elizacat/NullTerrain
+
+
+Credits
+=================================
+Written by Ryan Michela (deltahat@gmail.com)
