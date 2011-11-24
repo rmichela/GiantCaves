@@ -34,7 +34,13 @@ public class GiantCavePopulator extends BlockPopulator{
         this.config = config;
         blockingCoefficient = amplitude - config.cutoff;
         materialId = (byte)(config.debugMode ? 1 : 0); // Stone in debug, air in release
+        fxz = 1.0 / config.sxz;
+        fy = 1.0 / config.sy;
     }
+
+    // Frequency
+    private final double fxz;
+    private final double fy;
 
     // Density
     private final int amplitude = 100;
@@ -65,7 +71,7 @@ public class GiantCavePopulator extends BlockPopulator{
                     double xx = (source.getX() << 4) | (x & 0xF);
                     double yy = y & 0x7F;
                     double zz = (source.getZ() << 4) | (z & 0xF);
-                    if(    noiseGen.noise(xx * config.fxz, yy * config.fy, zz * config.fxz) * amplitude
+                    if(    noiseGen.noise(xx * fxz, yy * fy, zz * fxz) * amplitude
                          + noiseGen.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2
                          - linearCutoffCoefficient(y) > config.cutoff)
                     {

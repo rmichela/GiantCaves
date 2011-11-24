@@ -21,8 +21,8 @@ import java.util.Map;
  */
 public class Config {
     // Frequency
-    public double fxz;
-    public double fy;
+    public double sxz;
+    public double sy;
 
     // Density
     public int cutoff;
@@ -35,16 +35,16 @@ public class Config {
     public boolean debugMode;
 
     public Config(Map<String, Object> c) {
-        if(c.containsKey("fxz")) {
-            fxz = Double.parseDouble(c.get("fxz").toString());
+        if(c.containsKey("sxz")) {
+            sxz = Double.parseDouble(c.get("sxz").toString());
         } else {
-            fxz = 0.005;
+            sxz = 200;
         }
 
-        if(c.containsKey("fy")) {
-            fy = Double.parseDouble(c.get("fy").toString());
+        if(c.containsKey("sy")) {
+            sy = Double.parseDouble(c.get("sy").toString());
         } else {
-            fy = 0.01;
+            sy = 100;
         }
 
         if(c.containsKey("cutoff")) {

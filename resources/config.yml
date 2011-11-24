@@ -1,7 +1,7 @@
 worlds:
     - name   : world       # The name of a world to apply giant caves
-      fxz    : 0.005       # Perlin noise frequency in the horizontal plane (smaller number = wider cave)
-      fy     : 0.01        # Perlin noise frequency in the vertical dimension (smaller number = taller cave)
+      sxz    : 200         # Horizontal stretch (larger number = wider cave)
+      sy     : 100         # Vertical stretch (larger number = taller cave)
       cutoff : 62          # Minimum Perlin density cutoff (-100 to 100)
       miny   : 6           # Lower bound of cave zone
       maxy   : 64          # Uppoer bound of cave zone
