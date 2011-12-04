@@ -4,5 +4,5 @@ worlds:
       sy     : 100         # Vertical stretch (larger number = taller cave)
       cutoff : 62          # Minimum Perlin density cutoff (-100 to 100)
       miny   : 6           # Lower bound of cave zone
-      maxy   : 64          # Uppoer bound of cave zone
+      maxy   : 60          # Uppoer bound of cave zone
       debug  : false       # Turns on invert mode for experimenting with config values (true/false)
