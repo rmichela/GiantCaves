@@ -16,21 +16,28 @@
 package com.ryanmichela.giantcaves;
 
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftChunk;
 import org.bukkit.generator.BlockPopulator;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.noise.*;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 /**
  */
 public class GiantCavePopulator extends BlockPopulator{
 
+    public Plugin plugin;
     private Config config;
 
-    public GiantCavePopulator(Config config)
+    public GiantCavePopulator(Plugin plugin, Config config)
     {
+        this.plugin = plugin;
         this.config = config;
         blockingCoefficient = amplitude - config.cutoff;
         materialId = (byte)(config.debugMode ? 1 : 0); // Stone in debug, air in release
@@ -61,6 +68,7 @@ public class GiantCavePopulator extends BlockPopulator{
     public void populate(World world, Random random, Chunk source) {
         boolean hasGiantCave = false;
         byte[] chunkVector = ((CraftChunk)source).getHandle().b;
+        final Set<Block> needsPhysics = new HashSet<Block>();
 
         NoiseGenerator noiseGen = new SimplexNoiseGenerator(world);
 
@@ -77,11 +85,28 @@ public class GiantCavePopulator extends BlockPopulator{
                          - linearCutoffCoefficient(y) > config.cutoff)
                     {
                         hasGiantCave = true;
-                        chunkVector[blockOffset(x,y,z)] = materialId;
+                        int loc = blockOffset(x, y, z);
+
+                        if(chunkVector[loc] == 9 || chunkVector[loc] == 11) {
+                            needsPhysics.add(source.getBlock(x,y,z));
+                        }
+
+                        chunkVector[loc] = materialId;
                         chunkVector[blockOffset(x,120,z)] = 20;
                     }
                 }
             }
+        }
+
+        if(needsPhysics.size() > 0) {
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                public void run() {
+                    for(Block block : needsPhysics) {
+                        // Placing a gravel block where lava/water source blocks used to be kills lava/water towers
+                        block.setType(Material.GRAVEL);
+                    }
+                }
+            });
         }
 
         if(hasGiantCave) {

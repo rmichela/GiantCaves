@@ -44,7 +44,7 @@ public class GCPlugin extends JavaPlugin {
             Config config = parseConfig(event.getWorld());
             if(config != null) {
                 getServer().getLogger().info("[Giant Caves] Attaching cave populator to world \"" + event.getWorld().getName() + "\"");
-                event.getWorld().getPopulators().add(new GiantCavePopulator(config));
+                event.getWorld().getPopulators().add(new GiantCavePopulator(GCPlugin.this, config));
             }
         }
     }
