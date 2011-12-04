@@ -59,7 +59,8 @@ public class GiantCavePopulator extends BlockPopulator{
 
     @Override
     public void populate(World world, Random random, Chunk source) {
-        byte[] b = ((CraftChunk)source).getHandle().b;
+        boolean hasGiantCave = false;
+        byte[] chunkVector = ((CraftChunk)source).getHandle().b;
 
         NoiseGenerator noiseGen = new SimplexNoiseGenerator(world);
 
@@ -75,14 +76,20 @@ public class GiantCavePopulator extends BlockPopulator{
                          + noiseGen.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2
                          - linearCutoffCoefficient(y) > config.cutoff)
                     {
-                        b[blockOffset(x,z,y)] = materialId;
+                        hasGiantCave = true;
+                        chunkVector[blockOffset(x,y,z)] = materialId;
+                        chunkVector[blockOffset(x,120,z)] = 20;
                     }
                 }
             }
         }
+
+        if(hasGiantCave) {
+            world.refreshChunk(source.getX(), source.getZ());
+        }
     }
 
-    private int blockOffset(int x, int z, int y) {
+    private int blockOffset(int x, int y, int z) {
         return x << 11 | z << 7 | y;
     }
 
