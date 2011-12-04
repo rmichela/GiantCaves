@@ -65,8 +65,8 @@ public class GiantCavePopulator extends BlockPopulator{
     private final byte materialId;
 
     @Override
-    public void populate(World world, Random random, Chunk source) {
-        boolean hasGiantCave = false;
+    public void populate(final World world, final Random random, final Chunk source) {
+        boolean chunkHasGiantCave = false;
         byte[] chunkVector = ((CraftChunk)source).getHandle().b;
         final Set<Block> needsPhysics = new HashSet<Block>();
 
@@ -84,7 +84,7 @@ public class GiantCavePopulator extends BlockPopulator{
                          + noiseGen.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2
                          - linearCutoffCoefficient(y) > config.cutoff)
                     {
-                        hasGiantCave = true;
+                        chunkHasGiantCave = true;
                         int loc = blockOffset(x, y, z);
 
                         if(chunkVector[loc] == 9 || chunkVector[loc] == 11) {
@@ -109,8 +109,12 @@ public class GiantCavePopulator extends BlockPopulator{
             });
         }
 
-        if(hasGiantCave) {
-            world.refreshChunk(source.getX(), source.getZ());
+        if(chunkHasGiantCave) {
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                public void run() {
+                    world.refreshChunk(source.getX(), source.getZ());
+                }
+            });
         }
     }
 
