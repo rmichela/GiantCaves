@@ -92,7 +92,7 @@ public class GiantCavePopulator extends BlockPopulator{
                         }
 
                         chunkVector[loc] = materialId;
-                        chunkVector[blockOffset(x,120,z)] = 20;
+                        //chunkVector[blockOffset(x,120,z)] = 20;
                     }
                 }
             }
