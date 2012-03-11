@@ -31,7 +31,6 @@ import java.util.logging.Level;
 public class GCPlugin extends JavaPlugin {
 
     public void onEnable() {
-        getServer().getLogger().info("[Giant Caves] Started.");
         getServer().getPluginManager().registerEvents(new GCWorldListener(), this);
     }
 
@@ -43,7 +42,7 @@ public class GCPlugin extends JavaPlugin {
         public void onWorldInit(WorldInitEvent event) {
             Config config = parseConfig(event.getWorld());
             if(config != null) {
-                getServer().getLogger().info("[Giant Caves] Attaching cave populator to world \"" + event.getWorld().getName() + "\"");
+                getLogger().info("Attaching cave populator to world \"" + event.getWorld().getName() + "\"");
                 event.getWorld().getPopulators().add(new GiantCavePopulator(GCPlugin.this, config));
             }
         }
@@ -62,7 +61,7 @@ public class GCPlugin extends JavaPlugin {
         catch(IOException ex)
         {
             getConfig().options().copyDefaults(true);
-            getServer().getLogger().log(Level.SEVERE, "[Giant Caves] Failed to initialize configuration! Falling back to defaults.", ex);
+            getLogger().log(Level.SEVERE, "Failed to initialize configuration! Falling back to defaults.", ex);
         }
 
 
