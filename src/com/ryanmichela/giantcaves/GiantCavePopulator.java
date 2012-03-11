@@ -67,7 +67,7 @@ public class GiantCavePopulator extends BlockPopulator{
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
         boolean chunkHasGiantCave = false;
-        byte[] chunkVector = ((CraftChunk)source).getHandle().b;
+        int[] chunkVector = ((CraftChunk)source).getHandle().b;
         final Set<Block> needsPhysics = new HashSet<Block>();
 
         NoiseGenerator noiseGen = new SimplexNoiseGenerator(world);
