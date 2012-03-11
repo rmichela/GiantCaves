@@ -67,7 +67,7 @@ public class GiantCavePopulator extends BlockPopulator{
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
         boolean chunkHasGiantCave = false;
-        int[] chunkVector = ((CraftChunk)source).getHandle().b;
+//        int[] chunkVector = ((CraftChunk)source).getHandle().b;
         final Set<Block> needsPhysics = new HashSet<Block>();
 
         NoiseGenerator noiseGen = new SimplexNoiseGenerator(world);
@@ -85,13 +85,15 @@ public class GiantCavePopulator extends BlockPopulator{
                          - linearCutoffCoefficient(y) > config.cutoff)
                     {
                         chunkHasGiantCave = true;
-                        int loc = blockOffset(x, y, z);
+//                        int loc = blockOffset(x, y, z);
+                        int oldBlockId = ((CraftChunk)source).getHandle().getTypeId(x, y, z);
 
-                        if(chunkVector[loc] == 9 || chunkVector[loc] == 11) {
+                        if(oldBlockId == 9 || oldBlockId == 11) {
                             needsPhysics.add(source.getBlock(x,y,z));
                         }
 
-                        chunkVector[loc] = materialId;
+                        ((CraftChunk)source).getHandle().a(x, y, z, materialId);
+//                        chunkVector[loc] = materialId;
                         //chunkVector[blockOffset(x,120,z)] = 20;
                     }
                 }
@@ -118,9 +120,9 @@ public class GiantCavePopulator extends BlockPopulator{
         }
     }
 
-    private int blockOffset(int x, int y, int z) {
-        return x << 11 | z << 7 | y;
-    }
+//    private int blockOffset(int x, int y, int z) {
+//        return x << 11 | z << 7 | y;
+//    }
 
     private double linearCutoffCoefficient(int y) {
         // No distortion
