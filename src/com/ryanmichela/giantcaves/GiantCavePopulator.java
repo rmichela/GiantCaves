@@ -15,6 +15,7 @@
 
 package com.ryanmichela.giantcaves;
 
+import net.minecraft.server.ChunkSection;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -67,8 +68,10 @@ public class GiantCavePopulator extends BlockPopulator{
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
         boolean chunkHasGiantCave = false;
-//        int[] chunkVector = ((CraftChunk)source).getHandle().b;
+        net.minecraft.server.Chunk nmsChunk = ((CraftChunk)source).getHandle();
+        ChunkSection[] chunkSections = nmsChunk.h();
         final Set<Block> needsPhysics = new HashSet<Block>();
+        boolean flag = false;
 
         NoiseGenerator noiseGen = new SimplexNoiseGenerator(world);
 
@@ -85,19 +88,26 @@ public class GiantCavePopulator extends BlockPopulator{
                          - linearCutoffCoefficient(y) > config.cutoff)
                     {
                         chunkHasGiantCave = true;
-//                        int loc = blockOffset(x, y, z);
-                        int oldBlockId = ((CraftChunk)source).getHandle().getTypeId(x, y, z);
+                        int oldBlockId = nmsChunk.getTypeId(x, y, z);
 
-                        if(oldBlockId == 9 || oldBlockId == 11) {
+                        if(oldBlockId == Material.STATIONARY_WATER.getId() || oldBlockId == Material.STATIONARY_LAVA.getId()) {
                             needsPhysics.add(source.getBlock(x,y,z));
                         }
 
-                        ((CraftChunk)source).getHandle().a(x, y, z, materialId);
-//                        chunkVector[loc] = materialId;
-                        //chunkVector[blockOffset(x,120,z)] = 20;
+                        // See NMS.Chunk.a() line 368-375
+                        ChunkSection cs = chunkSections[y >> 4];
+                        if (cs == null) {
+                            cs = chunkSections[y >> 4] = new ChunkSection(y >> 4 << 4);
+                            flag = true;
+                        }
+                        cs.a(x, y & 15, z, materialId);
                     }
                 }
             }
+        }
+
+        if (flag) {
+            nmsChunk.initLighting();
         }
 
         if(needsPhysics.size() > 0) {
@@ -119,10 +129,6 @@ public class GiantCavePopulator extends BlockPopulator{
             });
         }
     }
-
-//    private int blockOffset(int x, int y, int z) {
-//        return x << 11 | z << 7 | y;
-//    }
 
     private double linearCutoffCoefficient(int y) {
         // No distortion
