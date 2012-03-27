@@ -44,6 +44,11 @@ public class GiantCavePopulator extends BlockPopulator{
         materialId = (byte)(config.debugMode ? 1 : 0); // Stone in debug, air in release
         fxz = 1.0 / config.sxz;
         fy = 1.0 / config.sy;
+        if (config.caveBandMax - config.caveBandMin > 128) {
+            caveBandBuffer = 32;
+        } else {
+            caveBandBuffer = 16;
+        }
     }
 
     // Frequency
@@ -60,7 +65,7 @@ public class GiantCavePopulator extends BlockPopulator{
     private final int amplitude2 = 2;
 
     // Position
-    private final int caveBandBuffer = 16;
+    private final int caveBandBuffer;
 
     // Material
     private final byte materialId;
@@ -77,11 +82,11 @@ public class GiantCavePopulator extends BlockPopulator{
 
         for(int x = 0; x < 16; x++) {
             for(int z = 0; z < 16; z++) {
-                for(int y = 0; y < 128; y++) {
+                for(int y = 0; y < 256; y++) {
                     if(y < config.caveBandMin || y > config.caveBandMax) continue;
 
                     double xx = (source.getX() << 4) | (x & 0xF);
-                    double yy = y & 0x7F;
+                    double yy = y;
                     double zz = (source.getZ() << 4) | (z & 0xF);
                     if(    noiseGen.noise(xx * fxz, yy * fy, zz * fxz) * amplitude
                          + noiseGen.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2
