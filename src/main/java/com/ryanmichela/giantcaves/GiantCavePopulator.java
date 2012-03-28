@@ -36,18 +36,26 @@ public class GiantCavePopulator extends BlockPopulator{
     public Plugin plugin;
     private Config config;
 
+    // Note: Smaller frequencies yield slower change (more stretched out)
+    //       Larger amplitudes yield greater influence on final void
+    
     // Frequency
-    private final double fxz;
-    private final double fy;
+    private final double f1xz;
+    private final double f1y;
 
     // Density
-    private final int amplitude = 100;
+    private final int amplitude1 = 100;
     private final double subtractForLessThanCutoff;
 
-    // Second pass
+    // Second pass - small noise
     private final double f2xz = 0.25;
     private final double f2y = 0.05;
     private final int amplitude2 = 2;
+    
+    // Third pass - vertical noise
+    private final double f3xz = 0.025;
+    private final double f3y =  0.005;
+    private final int amplitude3 = 20;
 
     // Position
     private final int caveBandBuffer;
@@ -59,10 +67,10 @@ public class GiantCavePopulator extends BlockPopulator{
     {
         this.plugin = plugin;
         this.config = config;
-        subtractForLessThanCutoff = amplitude - config.cutoff;
+        subtractForLessThanCutoff = amplitude1 - config.cutoff;
         materialId = (byte)(config.debugMode ? 1 : 0); // Stone in debug, air in release
-        fxz = 1.0 / config.sxz;
-        fy = 1.0 / config.sy;
+        f1xz = 1.0 / config.sxz;
+        f1y = 1.0 / config.sy;
         if (config.caveBandMax - config.caveBandMin > 128) {
             caveBandBuffer = 32;
         } else {
@@ -78,18 +86,21 @@ public class GiantCavePopulator extends BlockPopulator{
         final Set<Block> needsPhysics = new HashSet<Block>();
         boolean flag = false;
 
-        NoiseGenerator noiseGen = new SimplexNoiseGenerator(world);
+        NoiseGenerator noiseGen1 = new SimplexNoiseGenerator(world);
+        NoiseGenerator noiseGen2 = new SimplexNoiseGenerator((long)noiseGen1.noise(source.getX(), source.getZ()));
+        NoiseGenerator noiseGen3 = new SimplexNoiseGenerator((long)noiseGen1.noise(source.getX(), source.getZ()));
 
         for(int x = 0; x < 16; x++) {
             for(int z = 0; z < 16; z++) {
-                for(int y = 0; y < 256; y++) {
+                for(int y = 255; y >= 0 ; y--) {
                     if(y < config.caveBandMin || y > config.caveBandMax) continue;
 
                     double xx = (source.getX() << 4) | (x & 0xF);
                     double yy = y;
                     double zz = (source.getZ() << 4) | (z & 0xF);
-                    if(    noiseGen.noise(xx * fxz, yy * fy, zz * fxz) * amplitude
-                         + noiseGen.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2
+                    if(    (noiseGen1.noise(xx * f1xz, yy * f1y, zz * f1xz) * amplitude1)
+                         + (noiseGen2.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2)
+                         - (noiseGen3.noise(xx * f3xz, yy * f3y, zz * f3xz) * amplitude3)
                          - linearCutoffCoefficient(y) > config.cutoff)
                     {
                         chunkHasGiantCave = true;
@@ -123,7 +134,7 @@ public class GiantCavePopulator extends BlockPopulator{
                         block.setType(Material.GRAVEL);
                     }
                 }
-            });
+            }, 10);
         }
     }
 
