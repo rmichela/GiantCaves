@@ -125,14 +125,6 @@ public class GiantCavePopulator extends BlockPopulator{
                 }
             });
         }
-
-        if(chunkHasGiantCave) {
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                public void run() {
-                    world.refreshChunk(source.getX(), source.getZ());
-                }
-            });
-        }
     }
 
     private double linearCutoffCoefficient(int y) {
