@@ -36,28 +36,13 @@ public class GiantCavePopulator extends BlockPopulator{
     public Plugin plugin;
     private Config config;
 
-    public GiantCavePopulator(Plugin plugin, Config config)
-    {
-        this.plugin = plugin;
-        this.config = config;
-        blockingCoefficient = amplitude - config.cutoff;
-        materialId = (byte)(config.debugMode ? 1 : 0); // Stone in debug, air in release
-        fxz = 1.0 / config.sxz;
-        fy = 1.0 / config.sy;
-        if (config.caveBandMax - config.caveBandMin > 128) {
-            caveBandBuffer = 32;
-        } else {
-            caveBandBuffer = 16;
-        }
-    }
-
     // Frequency
     private final double fxz;
     private final double fy;
 
     // Density
     private final int amplitude = 100;
-    private final int blockingCoefficient;
+    private final double subtractForLessThanCutoff;
 
     // Second pass
     private final double f2xz = 0.25;
@@ -69,6 +54,21 @@ public class GiantCavePopulator extends BlockPopulator{
 
     // Material
     private final byte materialId;
+
+    public GiantCavePopulator(Plugin plugin, Config config)
+    {
+        this.plugin = plugin;
+        this.config = config;
+        subtractForLessThanCutoff = amplitude - config.cutoff;
+        materialId = (byte)(config.debugMode ? 1 : 0); // Stone in debug, air in release
+        fxz = 1.0 / config.sxz;
+        fy = 1.0 / config.sy;
+        if (config.caveBandMax - config.caveBandMin > 128) {
+            caveBandBuffer = 32;
+        } else {
+            caveBandBuffer = 16;
+        }
+    }
 
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
@@ -136,18 +136,18 @@ public class GiantCavePopulator extends BlockPopulator{
     }
 
     private double linearCutoffCoefficient(int y) {
-        // No distortion
+        // Out of bounds
         if( y < config.caveBandMin || y > config.caveBandMax) {
-            return blockingCoefficient;
+            return subtractForLessThanCutoff;
         // Bottom layer distortion
         } else if (y >= config.caveBandMin && y <= config.caveBandMin + caveBandBuffer) {
-            int yy = y - config.caveBandMin;
-            return (-blockingCoefficient / caveBandBuffer) * yy + blockingCoefficient;
+            double yy = y - config.caveBandMin;
+            return (-subtractForLessThanCutoff / (double)caveBandBuffer) * yy + subtractForLessThanCutoff;
         // Top layer distortion
         } else if (y <= config.caveBandMax && y >= config.caveBandMax - caveBandBuffer) {
-            int yy = y - config.caveBandMax + caveBandBuffer;
-            return (blockingCoefficient / caveBandBuffer) * yy;
-        // Out of range
+            double yy = y - config.caveBandMax + caveBandBuffer;
+            return (subtractForLessThanCutoff / (double)caveBandBuffer) * yy;
+        // In bounds, no distortion
         } else {
             return 0;
         }
