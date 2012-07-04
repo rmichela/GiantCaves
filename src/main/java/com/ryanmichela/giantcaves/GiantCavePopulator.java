@@ -116,6 +116,7 @@ public class GiantCavePopulator extends BlockPopulator{
                             cs = chunkSections[y >> 4] = new ChunkSection(y >> 4 << 4);
                             flag = true;
                         }
+                        // Set the target block to air
                         cs.a(x, y & 15, z, materialId);
                     }
                 }
