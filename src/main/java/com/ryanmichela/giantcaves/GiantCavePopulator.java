@@ -82,7 +82,7 @@ public class GiantCavePopulator extends BlockPopulator{
     public void populate(final World world, final Random random, final Chunk source) {
         boolean chunkHasGiantCave = false;
         net.minecraft.server.Chunk nmsChunk = ((CraftChunk)source).getHandle();
-        ChunkSection[] chunkSections = nmsChunk.h();
+        ChunkSection[] chunkSections = nmsChunk.i();
         final Set<Block> needsPhysics = new HashSet<Block>();
         boolean flag = false;
 
@@ -118,6 +118,8 @@ public class GiantCavePopulator extends BlockPopulator{
                         }
                         // Set the target block to air
                         cs.a(x, y & 15, z, materialId);
+                        // Strip out any TileEntity that may remain
+                        nmsChunk.f(x, y, z);
                     }
                 }
             }
