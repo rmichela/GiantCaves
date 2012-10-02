@@ -85,12 +85,6 @@ public class GiantCavePopulator extends BlockPopulator {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 for (int y = config.caveBandMax; y >= config.caveBandMin; y--) {
-                    /*
-                     * if (y < config.caveBandMin || y > config.caveBandMax) {
-                     * continue;
-                     * }
-                     */ //Wut...
-
                     double xx = (source.getX() << 4) | (x & 0xF);
                     double yy = y;
                     double zz = (source.getZ() << 4) | (z & 0xF);
@@ -100,12 +94,6 @@ public class GiantCavePopulator extends BlockPopulator {
                         - linearCutoffCoefficient(y) > config.cutoff) {
                         chunkHasGiantCave = true;
                         int oldBlockId = nmsChunk.getTypeId(x, y, z);
-
-                        //if (oldBlockId == Material.STATIONARY_WATER.getId() || oldBlockId == Material.STATIONARY_LAVA.getId()) {
-                        //if ((y > 0) && (((nmsChunk.getTypeId(x, y - 1, z) != Material.STATIONARY_WATER.getId()) && (nmsChunk.getTypeId(x, y - 1, z) != Material.STATIONARY_LAVA.getId())) || (nmsChunk.getTypeId(x, y - 1, z) == Material.AIR.getId()))) {
-                        //    fixBlocks.add(source.getBlock(x, y, z));
-                        //}
-                        //}
 
                         // See NMS.Chunk.a() line 368-375
                         ChunkSection cs = chunkSections[y >> 4];
@@ -139,18 +127,6 @@ public class GiantCavePopulator extends BlockPopulator {
         if (flag) {
             nmsChunk.initLighting();
         }
-
-        //if (!fixBlocks.isEmpty()) {
-        //plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-        //	public void run() {
-        //	    for (Block block : fixBlocks) {
-        //	        // Placing a air block where lava/water source blocks used to be kills lava/water towers
-        //		    block.setType(Material.AIR);
-        //		    block.setData((byte)0);
-        //	    }
-        //	}
-        //}, 10);
-        //}
     }
 
     private double linearCutoffCoefficient(int y) {
