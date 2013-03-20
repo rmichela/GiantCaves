@@ -14,12 +14,12 @@
 //along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.ryanmichela.giantcaves;
 
-import net.minecraft.server.ChunkSection;
+import net.minecraft.server.v1_5_R1.ChunkSection;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftChunk;
+import org.bukkit.craftbukkit.v1_5_R1.CraftChunk;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.noise.*;
@@ -72,10 +72,10 @@ public class GiantCavePopulator extends BlockPopulator {
 
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
-        boolean chunkHasGiantCave = false;
-        net.minecraft.server.Chunk nmsChunk = ((CraftChunk)source).getHandle();
+        //boolean chunkHasGiantCave = false;
+        net.minecraft.server.v1_5_R1.Chunk nmsChunk = ((CraftChunk)source).getHandle();
         ChunkSection[] chunkSections = nmsChunk.i();
-        final Set<Block> fixBlocks = new HashSet<Block>();
+        //final Set<Block> fixBlocks = new HashSet<>();
         boolean flag = false;
 
         NoiseGenerator noiseGen1 = new SimplexNoiseGenerator(world);
@@ -92,31 +92,31 @@ public class GiantCavePopulator extends BlockPopulator {
                         + (noiseGen2.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2)
                         - (noiseGen3.noise(xx * f3xz, yy * f3y, zz * f3xz) * amplitude3)
                         - linearCutoffCoefficient(y) > config.cutoff) {
-                        chunkHasGiantCave = true;
-                        int oldBlockId = nmsChunk.getTypeId(x, y, z);
+                        //chunkHasGiantCave = true;
+                        //int oldBlockId = nmsChunk.getTypeId(x, y, z);
 
                         // See NMS.Chunk.a() line 368-375
                         ChunkSection cs = chunkSections[y >> 4];
                         if (cs == null) {
-                            cs = chunkSections[y >> 4] = new ChunkSection(y >> 4 << 4);
+                            cs = chunkSections[y >> 4] = new ChunkSection(y >> 4 << 4, !nmsChunk.world.worldProvider.f);
                             flag = true;
                         }
+                        
                         // Set the target block to materialId.
-                        if (oldBlockId == Material.STATIONARY_WATER.getId() || oldBlockId == Material.STATIONARY_LAVA.getId()) { //Don't do it if it may be an ocean.
-                            if ((y > 0) && (((nmsChunk.getTypeId(x, y - 1, z) != Material.STATIONARY_WATER.getId()) && (nmsChunk.getTypeId(x, y - 1, z) != Material.STATIONARY_LAVA.getId())) || (nmsChunk.getTypeId(x, y - 1, z) == Material.AIR.getId()))) {
-                                cs.a(x, y & 15, z, materialId);
-                            }
+                        int idAbove = 0;
+                        if (y < 254) {
+                            idAbove = nmsChunk.getTypeId(x, y + 1, z);
+                        }
+                        
+                        cs.a(x, y & 15, z, materialId);
+                        if (idAbove == Material.STATIONARY_WATER.getId() || idAbove == Material.WATER.getId()) { // Should we be water.
+                            cs.a(x, y & 15, z, Material.WATER.getId());
+                        } else if (idAbove == Material.STATIONARY_LAVA.getId() || idAbove == Material.LAVA.getId()) { // Should we be lava.
+                            cs.a(x, y & 15, z, Material.LAVA.getId());
                         } else {
                             cs.a(x, y & 15, z, materialId);
                         }
-                        //Update blocks
-                        if (y > 0) { //Update below
-                            nmsChunk.world.a(x, y-1, z, nmsChunk.getTypeId(x, y-1, z), 4); //Update block
-                        }
-                        nmsChunk.world.a(x, y, z, nmsChunk.getTypeId(x, y, z), 4); //Update block
-                        if (y < 254) { //Update above
-                            nmsChunk.world.a(x, y+1, z, nmsChunk.getTypeId(x, y+1, z), 4); //Update block
-                        }
+                        
                         // Strip out any TileEntity that may remain
                         nmsChunk.f(x, y, z);
                     }
