@@ -4,18 +4,85 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>GiantCaves</groupId>
+    <!-- Project information -->
+    <groupId>com.ryanmichela</groupId>
     <artifactId>GiantCaves</artifactId>
-    <version>2.2</version>
+    <name>GiantCaves</name>
+    <version>2.4</version>
+    <url>http://dev.bukkit.org/server-mods/giant-caves/</url>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
+    <!-- License -->
+    <licenses>
+        <license>
+            <name>Creative Commons BY-NC-SA</name>
+            <url>http://creativecommons.org/licenses/by-nc-sa/3.0/de/</url>
+        </license>
+    </licenses>
+
+    <!-- Source code -->
+    <scm>
+        <developerConnection>scm:git:git@github.com:Xaymar/${project.name}.git</developerConnection>
+        <connection>scm:git:git://github.com/Xaymar/${project.name}.git</connection>
+        <url>https://github.com/Xaymar/${project.name}</url>
+    </scm>
+
+    <!-- Dependencies -->
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.3.1-R1.1-SNAPSHOT</version>
+            <version>1.5-R0.1</version>
+            <scope>provided</scope>
             <type>jar</type>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.5-R0.1</version>
+            <scope>provided</scope>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
+    <!-- Build -->
+    <build>
+        <plugins>
+            <!-- Compile plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+            <!-- Resources plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <!-- JAR creation plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <packaging>jar</packaging>
 </project>
