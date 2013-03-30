@@ -56,7 +56,7 @@ public class GiantCavePopulator extends BlockPopulator {
         this.plugin = plugin;
         this.config = config;
         subtractForLessThanCutoff = amplitude1 - config.cutoff;
-        materialId = (byte)(config.debugMode ? 1 : 0); // Stone in debug, air in release
+        materialId = (byte) (config.debugMode ? 1 : 0); // Stone in debug, air in release
         f1xz = 1.0 / config.sxz;
         f1y = 1.0 / config.sy;
         if (config.caveBandMax - config.caveBandMin > 128) {
@@ -68,15 +68,13 @@ public class GiantCavePopulator extends BlockPopulator {
 
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
-        //boolean chunkHasGiantCave = false;
-        net.minecraft.server.v1_5_R2.Chunk nmsChunk = ((CraftChunk)source).getHandle();
+        net.minecraft.server.v1_5_R2.Chunk nmsChunk = ((CraftChunk) source).getHandle();
         ChunkSection[] chunkSections = nmsChunk.i();
-        //final Set<Block> fixBlocks = new HashSet<>();
         boolean flag = false;
 
         NoiseGenerator noiseGen1 = new SimplexNoiseGenerator(world);
-        NoiseGenerator noiseGen2 = new SimplexNoiseGenerator((long)noiseGen1.noise(source.getX(), source.getZ()));
-        NoiseGenerator noiseGen3 = new SimplexNoiseGenerator((long)noiseGen1.noise(source.getX(), source.getZ()));
+        NoiseGenerator noiseGen2 = new SimplexNoiseGenerator((long) noiseGen1.noise(source.getX(), source.getZ()));
+        NoiseGenerator noiseGen3 = new SimplexNoiseGenerator((long) noiseGen1.noise(source.getX(), source.getZ()));
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -85,11 +83,9 @@ public class GiantCavePopulator extends BlockPopulator {
                     double yy = y;
                     double zz = (source.getZ() << 4) | (z & 0xF);
                     if ((noiseGen1.noise(xx * f1xz, yy * f1y, zz * f1xz) * amplitude1)
-                        + (noiseGen2.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2)
-                        - (noiseGen3.noise(xx * f3xz, yy * f3y, zz * f3xz) * amplitude3)
-                        - linearCutoffCoefficient(y) > config.cutoff) {
-                        //chunkHasGiantCave = true;
-                        //int oldBlockId = nmsChunk.getTypeId(x, y, z);
+                            + (noiseGen2.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2)
+                            - (noiseGen3.noise(xx * f3xz, yy * f3y, zz * f3xz) * amplitude3)
+                            - linearCutoffCoefficient(y) > config.cutoff) {
 
                         // See NMS.Chunk.a() line 368-375
                         ChunkSection cs = chunkSections[y >> 4];
@@ -97,13 +93,13 @@ public class GiantCavePopulator extends BlockPopulator {
                             cs = chunkSections[y >> 4] = new ChunkSection(y >> 4 << 4, !nmsChunk.world.worldProvider.f);
                             flag = true;
                         }
-                        
+
                         // Set the target block to materialId.
                         int idAbove = 0;
                         if (y < 254) {
                             idAbove = nmsChunk.getTypeId(x, y + 1, z);
                         }
-                        
+
                         cs.a(x, y & 15, z, materialId);
                         if (idAbove == Material.STATIONARY_WATER.getId() || idAbove == Material.WATER.getId()) { // Should we be water.
                             cs.a(x, y & 15, z, Material.WATER.getId());
@@ -112,7 +108,7 @@ public class GiantCavePopulator extends BlockPopulator {
                         } else {
                             cs.a(x, y & 15, z, materialId);
                         }
-                        
+
                         // Strip out any TileEntity that may remain
                         nmsChunk.f(x, y, z);
                     }
@@ -132,11 +128,11 @@ public class GiantCavePopulator extends BlockPopulator {
             // Bottom layer distortion
         } else if (y >= config.caveBandMin && y <= config.caveBandMin + caveBandBuffer) {
             double yy = y - config.caveBandMin;
-            return (-subtractForLessThanCutoff / (double)caveBandBuffer) * yy + subtractForLessThanCutoff;
+            return (-subtractForLessThanCutoff / (double) caveBandBuffer) * yy + subtractForLessThanCutoff;
             // Top layer distortion
         } else if (y <= config.caveBandMax && y >= config.caveBandMax - caveBandBuffer) {
             double yy = y - config.caveBandMax + caveBandBuffer;
-            return (subtractForLessThanCutoff / (double)caveBandBuffer) * yy;
+            return (subtractForLessThanCutoff / (double) caveBandBuffer) * yy;
             // In bounds, no distortion
         } else {
             return 0;
