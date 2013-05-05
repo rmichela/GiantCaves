@@ -14,11 +14,11 @@
 //along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.ryanmichela.giantcaves;
 
-import net.minecraft.server.v1_5_R2.ChunkSection;
+import net.minecraft.server.v1_5_R3.ChunkSection;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_5_R2.CraftChunk;
+import org.bukkit.craftbukkit.v1_5_R3.CraftChunk;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.noise.*;
@@ -68,7 +68,7 @@ public class GiantCavePopulator extends BlockPopulator {
 
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
-        net.minecraft.server.v1_5_R2.Chunk nmsChunk = ((CraftChunk) source).getHandle();
+        net.minecraft.server.v1_5_R3.Chunk nmsChunk = ((CraftChunk) source).getHandle();
         ChunkSection[] chunkSections = nmsChunk.i();
         boolean flag = false;
 
@@ -100,13 +100,13 @@ public class GiantCavePopulator extends BlockPopulator {
                             idAbove = nmsChunk.getTypeId(x, y + 1, z);
                         }
 
-                        cs.a(x, y & 15, z, materialId);
+                        cs.setData(x, y & 15, z, materialId);
                         if (idAbove == Material.STATIONARY_WATER.getId() || idAbove == Material.WATER.getId()) { // Should we be water.
-                            cs.a(x, y & 15, z, Material.WATER.getId());
+                            cs.setData(x, y & 15, z, Material.WATER.getId());
                         } else if (idAbove == Material.STATIONARY_LAVA.getId() || idAbove == Material.LAVA.getId()) { // Should we be lava.
-                            cs.a(x, y & 15, z, Material.LAVA.getId());
+                            cs.setData(x, y & 15, z, Material.LAVA.getId());
                         } else {
-                            cs.a(x, y & 15, z, materialId);
+                            cs.setData(x, y & 15, z, materialId);
                         }
 
                         // Strip out any TileEntity that may remain
