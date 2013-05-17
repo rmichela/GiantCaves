@@ -56,7 +56,7 @@ public class GiantCavePopulator extends BlockPopulator {
         this.plugin = plugin;
         this.config = config;
         subtractForLessThanCutoff = amplitude1 - config.cutoff;
-        materialId = (byte) (config.debugMode ? 1 : 0); // Stone in debug, air in release
+        materialId = (byte) (config.debugMode ? Material.STONE.getId() : Material.AIR.getId()); // Stone in debug, air in release
         f1xz = 1.0 / config.sxz;
         f1y = 1.0 / config.sy;
         if (config.caveBandMax - config.caveBandMin > 128) {
@@ -100,13 +100,13 @@ public class GiantCavePopulator extends BlockPopulator {
                             idAbove = nmsChunk.getTypeId(x, y + 1, z);
                         }
 
-                        cs.setData(x, y & 15, z, materialId);
+                        cs.setTypeId(x, y & 15, z, materialId);
                         if (idAbove == Material.STATIONARY_WATER.getId() || idAbove == Material.WATER.getId()) { // Should we be water.
-                            cs.setData(x, y & 15, z, Material.WATER.getId());
+                            cs.setTypeId(x, y & 15, z, Material.WATER.getId());
                         } else if (idAbove == Material.STATIONARY_LAVA.getId() || idAbove == Material.LAVA.getId()) { // Should we be lava.
-                            cs.setData(x, y & 15, z, Material.LAVA.getId());
-                        } else {
-                            cs.setData(x, y & 15, z, materialId);
+                            cs.setTypeId(x, y & 15, z, Material.LAVA.getId());
+                        /*} else {
+                            cs.setTypeId(x, y & 15, z, materialId);*/
                         }
 
                         // Strip out any TileEntity that may remain
