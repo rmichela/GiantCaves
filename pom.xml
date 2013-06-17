@@ -30,6 +30,14 @@
         <url>https://github.com/Xaymar/${project.name}</url>
     </scm>
 
+    <!-- Repositories -->
+    <repositories>
+        <repository>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
+        </repository>
+    </repositories>
+    
     <!-- Dependencies -->
     <dependencies>
         <dependency>
