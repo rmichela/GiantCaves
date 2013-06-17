@@ -1,4 +1,7 @@
 name: GiantCaves
-version: 2.2
+version: 1.5.2-R1.0
+author: Xaymar
 main: com.ryanmichela.giantcaves.GCPlugin
-load: startup
+prefix: "GiantCaves"
+load: STARTUP
+loadbefore: [ Multiverse-Core, MyWorlds ]
