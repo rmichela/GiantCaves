@@ -14,11 +14,11 @@
 //along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.ryanmichela.giantcaves;
 
-import net.minecraft.server.v1_5_R3.ChunkSection;
+import net.minecraft.server.v1_6_R2.ChunkSection;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_5_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_6_R2.CraftChunk;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.noise.*;
@@ -68,7 +68,7 @@ public class GiantCavePopulator extends BlockPopulator {
 
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
-        net.minecraft.server.v1_5_R3.Chunk nmsChunk = ((CraftChunk) source).getHandle();
+        net.minecraft.server.v1_6_R2.Chunk nmsChunk = ((CraftChunk) source).getHandle();
         ChunkSection[] chunkSections = nmsChunk.i();
         boolean flag = false;
 
