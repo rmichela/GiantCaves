@@ -1,5 +1,5 @@
 name: GiantCaves
-version: 1.6.2-R0.1
+version: "1.6.2-R0.1 R1"
 author: Xaymar
 main: com.ryanmichela.giantcaves.GCPlugin
 prefix: "GiantCaves"
