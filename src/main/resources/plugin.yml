@@ -1,6 +1,6 @@
 name: GiantCaves
-version: "1.6.2-R0.1 R1"
-author: Xaymar
+version: "1.6.4-R01"
+author: Deltahat, Xaymar
 main: com.ryanmichela.giantcaves.GCPlugin
 prefix: "GiantCaves"
 load: STARTUP

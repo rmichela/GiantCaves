@@ -14,14 +14,15 @@
 //along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.ryanmichela.giantcaves;
 
-import net.minecraft.server.v1_6_R2.ChunkSection;
+import net.minecraft.server.v1_6_R3.*;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_6_R2.CraftChunk;
+import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.noise.*;
+import org.bukkit.util.noise.NoiseGenerator;
+import org.bukkit.util.noise.SimplexNoiseGenerator;
 
 import java.util.Random;
 
@@ -68,9 +69,9 @@ public class GiantCavePopulator extends BlockPopulator {
 
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
-        net.minecraft.server.v1_6_R2.Chunk nmsChunk = ((CraftChunk) source).getHandle();
+        net.minecraft.server.v1_6_R3.Chunk nmsChunk = ((CraftChunk) source).getHandle();
         ChunkSection[] chunkSections = nmsChunk.i();
-        boolean flag = false;
+        boolean chunkWasChanged = false;
 
         NoiseGenerator noiseGen1 = new SimplexNoiseGenerator(world);
         NoiseGenerator noiseGen2 = new SimplexNoiseGenerator((long) noiseGen1.noise(source.getX(), source.getZ()));
@@ -91,23 +92,11 @@ public class GiantCavePopulator extends BlockPopulator {
                         ChunkSection cs = chunkSections[y >> 4];
                         if (cs == null) {
                             cs = chunkSections[y >> 4] = new ChunkSection(y >> 4 << 4, !nmsChunk.world.worldProvider.f);
-                            flag = true;
+                            chunkWasChanged = true;
                         }
 
-                        // Set the target block to materialId.
-                        int idAbove = 0;
-                        if (y < 254) {
-                            idAbove = nmsChunk.getTypeId(x, y + 1, z);
-                        }
-
+                        // Create the cave by the block at this coordinate
                         cs.setTypeId(x, y & 15, z, materialId);
-                        if (idAbove == Material.STATIONARY_WATER.getId() || idAbove == Material.WATER.getId()) { // Should we be water.
-                            cs.setTypeId(x, y & 15, z, Material.WATER.getId());
-                        } else if (idAbove == Material.STATIONARY_LAVA.getId() || idAbove == Material.LAVA.getId()) { // Should we be lava.
-                            cs.setTypeId(x, y & 15, z, Material.LAVA.getId());
-                        /*} else {
-                            cs.setTypeId(x, y & 15, z, materialId);*/
-                        }
 
                         // Strip out any TileEntity that may remain
                         nmsChunk.f(x, y, z);
@@ -116,7 +105,7 @@ public class GiantCavePopulator extends BlockPopulator {
             }
         }
 
-        if (flag) {
+        if (chunkWasChanged) {
             nmsChunk.initLighting();
         }
     }

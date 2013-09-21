@@ -18,6 +18,7 @@ package com.ryanmichela.giantcaves;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -46,6 +47,11 @@ public class GCPlugin extends JavaPlugin {
                 event.getWorld().getPopulators().add(new GiantCavePopulator(GCPlugin.this, config));
             }
         }
+
+//        @EventHandler
+//        public void FromToHandler(BlockFromToEvent event) {
+//            getLogger().info(event.getBlock().toString() + " => " + event.getToBlock().toString());
+//        }
     }
 
     private Config parseConfig(World bukkitWorld) {
@@ -84,5 +90,4 @@ public class GCPlugin extends JavaPlugin {
             out.close();
             in.close();
     }
-
 }
