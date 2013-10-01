@@ -47,11 +47,6 @@ public class GCPlugin extends JavaPlugin {
                 event.getWorld().getPopulators().add(new GiantCavePopulator(GCPlugin.this, config));
             }
         }
-
-//        @EventHandler
-//        public void FromToHandler(BlockFromToEvent event) {
-//            getLogger().info(event.getBlock().toString() + " => " + event.getToBlock().toString());
-//        }
     }
 
     private Config parseConfig(World bukkitWorld) {

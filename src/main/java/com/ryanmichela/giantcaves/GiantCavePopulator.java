@@ -21,50 +21,22 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.noise.NoiseGenerator;
-import org.bukkit.util.noise.SimplexNoiseGenerator;
 
 import java.util.Random;
 
-/**
- */
 public class GiantCavePopulator extends BlockPopulator {
 
-    public Plugin plugin;
-    private Config config;
-// Note: Smaller frequencies yield slower change (more stretched out)
-//   Larger amplitudes yield greater influence on final void
-// Frequency
-    private final double f1xz;
-    private final double f1y;
-// Density
-    private final int amplitude1 = 100;
-    private final double subtractForLessThanCutoff;
-// Second pass - small noise
-    private final double f2xz = 0.25;
-    private final double f2y = 0.05;
-    private final int amplitude2 = 2;
-// Third pass - vertical noise
-    private final double f3xz = 0.025;
-    private final double f3y = 0.005;
-    private final int amplitude3 = 20;
-// Position
-    private final int caveBandBuffer;
-// Material
-    private final byte materialId;
+    public final Plugin plugin;
+    private final Config config;
+
+    // Material
+    private final Material material;
 
     public GiantCavePopulator(Plugin plugin, Config config) {
         this.plugin = plugin;
         this.config = config;
-        subtractForLessThanCutoff = amplitude1 - config.cutoff;
-        materialId = (byte) (config.debugMode ? Material.STONE.getId() : Material.AIR.getId()); // Stone in debug, air in release
-        f1xz = 1.0 / config.sxz;
-        f1y = 1.0 / config.sy;
-        if (config.caveBandMax - config.caveBandMin > 128) {
-            caveBandBuffer = 32;
-        } else {
-            caveBandBuffer = 16;
-        }
+        material = config.debugMode ? Material.STONE : Material.AIR; // Stone in debug, air in release
+        plugin.getServer().getPluginManager().registerEvents(new GCWaterHandler(config), plugin);
     }
 
     @Override
@@ -73,21 +45,12 @@ public class GiantCavePopulator extends BlockPopulator {
         ChunkSection[] chunkSections = nmsChunk.i();
         boolean chunkWasChanged = false;
 
-        NoiseGenerator noiseGen1 = new SimplexNoiseGenerator(world);
-        NoiseGenerator noiseGen2 = new SimplexNoiseGenerator((long) noiseGen1.noise(source.getX(), source.getZ()));
-        NoiseGenerator noiseGen3 = new SimplexNoiseGenerator((long) noiseGen1.noise(source.getX(), source.getZ()));
+        GCRandom gcRandom = new GCRandom(source, config);
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 for (int y = config.caveBandMax; y >= config.caveBandMin; y--) {
-                    double xx = (source.getX() << 4) | (x & 0xF);
-                    double yy = y;
-                    double zz = (source.getZ() << 4) | (z & 0xF);
-                    if ((noiseGen1.noise(xx * f1xz, yy * f1y, zz * f1xz) * amplitude1)
-                            + (noiseGen2.noise(xx * f2xz, yy * f2y, zz * f2xz) * amplitude2)
-                            - (noiseGen3.noise(xx * f3xz, yy * f3y, zz * f3xz) * amplitude3)
-                            - linearCutoffCoefficient(y) > config.cutoff) {
-
+                    if (gcRandom.isInGiantCave(x, y, z)) {
                         // See NMS.Chunk.a() line 368-375
                         ChunkSection cs = chunkSections[y >> 4];
                         if (cs == null) {
@@ -96,7 +59,7 @@ public class GiantCavePopulator extends BlockPopulator {
                         }
 
                         // Create the cave by the block at this coordinate
-                        cs.setTypeId(x, y & 15, z, materialId);
+                        cs.setTypeId(x, y & 15, z, material.getId());
 
                         // Strip out any TileEntity that may remain
                         nmsChunk.f(x, y, z);
@@ -107,24 +70,6 @@ public class GiantCavePopulator extends BlockPopulator {
 
         if (chunkWasChanged) {
             nmsChunk.initLighting();
-        }
-    }
-
-    private double linearCutoffCoefficient(int y) {
-        // Out of bounds
-        if (y < config.caveBandMin || y > config.caveBandMax) {
-            return subtractForLessThanCutoff;
-            // Bottom layer distortion
-        } else if (y >= config.caveBandMin && y <= config.caveBandMin + caveBandBuffer) {
-            double yy = y - config.caveBandMin;
-            return (-subtractForLessThanCutoff / (double) caveBandBuffer) * yy + subtractForLessThanCutoff;
-            // Top layer distortion
-        } else if (y <= config.caveBandMax && y >= config.caveBandMax - caveBandBuffer) {
-            double yy = y - config.caveBandMax + caveBandBuffer;
-            return (subtractForLessThanCutoff / (double) caveBandBuffer) * yy;
-            // In bounds, no distortion
-        } else {
-            return 0;
         }
     }
 }
