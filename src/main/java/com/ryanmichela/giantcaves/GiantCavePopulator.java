@@ -43,7 +43,6 @@ public class GiantCavePopulator extends BlockPopulator {
     public void populate(final World world, final Random random, final Chunk source) {
         net.minecraft.server.v1_6_R3.Chunk nmsChunk = ((CraftChunk) source).getHandle();
         ChunkSection[] chunkSections = nmsChunk.i();
-        boolean chunkWasChanged = false;
 
         GCRandom gcRandom = new GCRandom(source, config);
 
@@ -55,7 +54,6 @@ public class GiantCavePopulator extends BlockPopulator {
                         ChunkSection cs = chunkSections[y >> 4];
                         if (cs == null) {
                             cs = chunkSections[y >> 4] = new ChunkSection(y >> 4 << 4, !nmsChunk.world.worldProvider.f);
-                            chunkWasChanged = true;
                         }
 
                         // Create the cave by the block at this coordinate
@@ -66,10 +64,6 @@ public class GiantCavePopulator extends BlockPopulator {
                     }
                 }
             }
-        }
-
-        if (chunkWasChanged) {
-            nmsChunk.initLighting();
         }
     }
 }

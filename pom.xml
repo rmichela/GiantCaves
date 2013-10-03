@@ -8,7 +8,7 @@
     <groupId>com.ryanmichela</groupId>
     <artifactId>GiantCaves</artifactId>
     <name>GiantCaves</name>
-    <version>1.6.4-R01</version>
+    <version>1.6.4-R02</version>
     <url>http://dev.bukkit.org/server-mods/giant-caves/</url>
     
     <properties>
