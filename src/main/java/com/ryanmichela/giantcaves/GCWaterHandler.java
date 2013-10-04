@@ -1,10 +1,7 @@
 package com.ryanmichela.giantcaves;
 
-import net.minecraft.server.v1_6_R3.ChunkSection;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
 import org.bukkit.event.EventHandler;
