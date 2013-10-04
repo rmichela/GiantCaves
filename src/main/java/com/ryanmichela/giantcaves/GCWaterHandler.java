@@ -43,18 +43,9 @@ public class GCWaterHandler implements Listener {
             GCRandom r = randoms.get(c);
 
             if (r.isInGiantCave(b.getX(), b.getY(), b.getZ())) {
-                if (b2.getRelative(BlockFace.DOWN, 1).getType() == Material.AIR &&
-                    b2.getRelative(BlockFace.DOWN, 2).getType() == Material.AIR) {
-                    // Convert global coordinates to chunk offsets
-                    int xx = b.getX() % 16;
-                    int zz = b.getZ() % 16;
-                    if (c.getX() < 0) xx = (16 - xx) & 0xF;
-                    if (c.getZ() < 0) zz = (16 - zz) & 0xF;
-
-                    if (xx == 0 || xx == 15 || zz == 0 || zz == 15) {
+                if (b.getData() == 0) { // data value of 0 means source block
                         event.setCancelled(true);
                     }
-                }
             }
         }
     }
