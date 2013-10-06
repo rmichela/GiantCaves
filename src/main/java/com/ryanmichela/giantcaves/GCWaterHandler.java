@@ -1,6 +1,7 @@
 package com.ryanmichela.giantcaves;
 
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
 import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
@@ -29,20 +30,21 @@ public class GCWaterHandler implements Listener {
     public void FromToHandler(BlockFromToEvent event) {
         // During chunk generation, nms.World.d is set to true. While true, liquids
         // flow continuously instead tick-by-tick. See nms.WorldGenLiquids line 59.
-        boolean continuousFlowMode = ((CraftWorld)event.getBlock().getWorld()).getHandle().d;
-        if (continuousFlowMode) {
-            Block b = event.getBlock();
-            Block b2 = event.getToBlock();
-            CraftChunk c = (CraftChunk)b.getChunk();
-            if (!randoms.containsKey(c)) {
-                randoms.put(c, new GCRandom(c, config));
-            }
-            GCRandom r = randoms.get(c);
+        Block b = event.getBlock();
+        if (b.getType() == Material.STATIONARY_WATER || b.getType() == Material.STATIONARY_WATER) {
+            boolean continuousFlowMode = ((CraftWorld)event.getBlock().getWorld()).getHandle().d;
+            if (continuousFlowMode) {
+                CraftChunk c = (CraftChunk)b.getChunk();
+                if (!randoms.containsKey(c)) {
+                    randoms.put(c, new GCRandom(c, config));
+                }
+                GCRandom r = randoms.get(c);
 
-            if (r.isInGiantCave(b.getX(), b.getY(), b.getZ())) {
-                if (b.getData() == 0) { // data value of 0 means source block
-                        event.setCancelled(true);
-                    }
+                if (r.isInGiantCave(b.getX(), b.getY(), b.getZ())) {
+                    if (b.getData() == 0) { // data value of 0 means source block
+                            event.setCancelled(true);
+                        }
+                }
             }
         }
     }
