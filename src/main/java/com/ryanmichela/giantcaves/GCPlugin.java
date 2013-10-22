@@ -19,6 +19,7 @@ import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -35,6 +36,14 @@ public class GCPlugin extends JavaPlugin {
     }
 
     public void onDisable() {
+    }
+
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
+        if (id == null || id == "") {
+            id = "sxz=200,sy=100,cutoff=62,miny=6,maxy=50";
+        }
+        return new GCChunkGenerator(this, id);
     }
 
     private class GCWorldListener implements Listener {

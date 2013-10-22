@@ -62,7 +62,7 @@ public class Config {
         if(c.containsKey("maxy")) {
             caveBandMax = Integer.parseInt(c.get("maxy").toString());
         } else {
-            caveBandMax = 64;
+            caveBandMax = 50;
         }
 
         if(c.containsKey("debug")) {
