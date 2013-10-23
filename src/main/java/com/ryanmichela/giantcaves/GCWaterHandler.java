@@ -31,7 +31,7 @@ public class GCWaterHandler implements Listener {
         // During chunk generation, nms.World.d is set to true. While true, liquids
         // flow continuously instead tick-by-tick. See nms.WorldGenLiquids line 59.
         Block b = event.getBlock();
-        if (b.getType() == Material.STATIONARY_WATER || b.getType() == Material.STATIONARY_WATER) {
+        if (b.getType() == Material.STATIONARY_WATER || b.getType() == Material.STATIONARY_LAVA) {
             boolean continuousFlowMode = ((CraftWorld)event.getBlock().getWorld()).getHandle().d;
             if (continuousFlowMode) {
                 CraftChunk c = (CraftChunk)b.getChunk();
