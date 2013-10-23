@@ -22,17 +22,21 @@ import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  */
 public class GCPlugin extends JavaPlugin {
 
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(new GCWorldListener(), this);
+        // create the plugin directory if it does not exist
+        this.saveDefaultConfig();
+
+        // attach to worlds automatically when onlyUseWorldManagers is false
+        if (!getConfig().getBoolean("onlyUseWorldManagers", false)) {
+            getServer().getPluginManager().registerEvents(new GCWorldListener(), this);
+        }
     }
 
     public void onDisable() {
@@ -58,22 +62,6 @@ public class GCPlugin extends JavaPlugin {
     }
 
     private Config parseConfig(World bukkitWorld) {
-        // create the plugin directory if it does not exist
-        try
-        {
-            File configFile = new File(getDataFolder(), "config.yml");
-            if(!configFile.exists()){
-                configFile.getParentFile().mkdirs();
-                copy(getResource("config.yml"), configFile);
-            }
-        }
-        catch(IOException ex)
-        {
-            getConfig().options().copyDefaults(true);
-            getLogger().log(Level.SEVERE, "Failed to initialize configuration! Falling back to defaults.", ex);
-        }
-
-
         List<Map<?, ?>> worlds = getConfig().getMapList("worlds");
         for(Map<?, ?> worldConfig : worlds) {
             if(worldConfig.get("name").equals(bukkitWorld.getName())) {
@@ -81,16 +69,5 @@ public class GCPlugin extends JavaPlugin {
             }
         }
         return null;
-    }
-
-    private void copy(InputStream in, File file) throws IOException {
-            OutputStream out = new FileOutputStream(file);
-            byte[] buf = new byte[1024];
-            int len;
-            while((len=in.read(buf))>0) {
-                out.write(buf,0,len);
-            }
-            out.close();
-            in.close();
     }
 }

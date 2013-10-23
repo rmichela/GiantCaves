@@ -17,8 +17,9 @@ and most likely any world generation plugin that implements the chunk generator 
 Installation
 =================================
 Drop GiantCaves.jar into the bukkit plugin directory. It will create its own configuration file with
-default configuration options. By default, Giant Caves is configured to populate the default world called
-"world".
+default configuration options. By default, Giant Caves is configured to work with world managers like
+Multiverse and My Worlds. To make Giant Caves work as a stand-alone plugin, set onlyUseWorldManagers
+to false.
 
 
 Configuration
@@ -49,7 +50,7 @@ Below are extended descriptions of each of the configuration keys:
                        The lowest block layer Giant Caves will populate.
 
 
-  maxy   : 64          Uppoer bound of cave zone
+  maxy   : 50          Upper bound of cave zone
                        The highest block layer Giant Caves will populate.
 
 
