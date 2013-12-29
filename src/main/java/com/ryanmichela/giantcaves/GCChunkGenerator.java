@@ -1,7 +1,7 @@
 package com.ryanmichela.giantcaves;
 
-import net.minecraft.server.v1_6_R3.World;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
+import net.minecraft.server.v1_7_R1.World;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
@@ -22,7 +22,7 @@ public class GCChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public byte[] generate(org.bukkit.World world, Random random, int x, int z) {
+    public byte[][] generateBlockSections(org.bukkit.World world, Random random, int x, int z, BiomeGrid biomes) {
         GCChunkProviderGenerate chunkProvider = lazyGetProvider(world);
         return chunkProvider.getChunkSectionsAt(x, z);
     }

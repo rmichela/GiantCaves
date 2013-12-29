@@ -14,11 +14,12 @@
 //along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.ryanmichela.giantcaves;
 
-import net.minecraft.server.v1_6_R3.*;
+import net.minecraft.server.v1_7_R1.Block;
+import net.minecraft.server.v1_7_R1.Blocks;
+import net.minecraft.server.v1_7_R1.ChunkSection;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_6_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_7_R1.CraftChunk;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.Plugin;
 
@@ -30,18 +31,18 @@ public class GiantCavePopulator extends BlockPopulator {
     private final Config config;
 
     // Material
-    private final Material material;
+    private final Block material;
 
     public GiantCavePopulator(Plugin plugin, Config config) {
         this.plugin = plugin;
         this.config = config;
-        material = config.debugMode ? Material.STONE : Material.AIR; // Stone in debug, air in release
+        material = config.debugMode ? Blocks.STONE : Blocks.AIR; // Stone in debug, air in release
         plugin.getServer().getPluginManager().registerEvents(new GCWaterHandler(config), plugin);
     }
 
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
-        net.minecraft.server.v1_6_R3.Chunk nmsChunk = ((CraftChunk) source).getHandle();
+        net.minecraft.server.v1_7_R1.Chunk nmsChunk = ((CraftChunk) source).getHandle();
         ChunkSection[] chunkSections = nmsChunk.i();
 
         GCRandom gcRandom = new GCRandom(source, config);
@@ -57,7 +58,7 @@ public class GiantCavePopulator extends BlockPopulator {
                         }
 
                         // Create the cave by the block at this coordinate
-                        cs.setTypeId(x, y & 15, z, material.getId());
+                        cs.setTypeId(x, y & 15, z, material);
 
                         // Strip out any TileEntity that may remain
                         nmsChunk.f(x, y, z);
