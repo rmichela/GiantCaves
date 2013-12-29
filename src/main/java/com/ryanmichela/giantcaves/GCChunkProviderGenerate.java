@@ -57,7 +57,11 @@ public class GCChunkProviderGenerate extends ChunkProviderGenerate {
 
         byte[][] chunkSectionBytes = new byte[chunkSections.length][];
         for(int k = 0; k < chunkSectionBytes.length; k++) {
-            chunkSectionBytes[k] = chunkSections[k].getIdArray();
+            if (chunkSections[k] != null) {
+                chunkSectionBytes[k] = chunkSections[k].getIdArray();
+            } else {
+                chunkSectionBytes[k] = null;
+            }
         }
         return chunkSectionBytes;
     }
