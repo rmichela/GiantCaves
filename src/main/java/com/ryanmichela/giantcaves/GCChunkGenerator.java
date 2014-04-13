@@ -1,7 +1,7 @@
 package com.ryanmichela.giantcaves;
 
-import net.minecraft.server.v1_7_R2.World;
-import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
+import net.minecraft.server.v1_7_R3.World;
+import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
