@@ -1,6 +1,6 @@
 package com.ryanmichela.giantcaves;
 
-import net.minecraft.server.v1_7_R3.*;
+import net.minecraft.server.v1_7_R4.*;
 
 import java.util.Random;
 
@@ -53,7 +53,7 @@ public class GCChunkProviderGenerate extends ChunkProviderGenerate {
         }
 
         Chunk localChunk = new Chunk(n, arrayOfBlock, arrayOfByte1, ii, jj);
-        ChunkSection[] chunkSections = localChunk.i();
+        ChunkSection[] chunkSections = localChunk.getSections();
 
         byte[][] chunkSectionBytes = new byte[chunkSections.length][];
         for(int k = 0; k < chunkSectionBytes.length; k++) {

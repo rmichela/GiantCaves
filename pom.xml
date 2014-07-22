@@ -8,7 +8,7 @@
     <groupId>com.ryanmichela</groupId>
     <artifactId>GiantCaves</artifactId>
     <name>GiantCaves</name>
-    <version>1.7.8-R01</version>
+    <version>1.7.10-R01</version>
     <url>http://dev.bukkit.org/server-mods/giant-caves/</url>
     
     <properties>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.7.8-R0.1-SNAPSHOT</version>
+            <version>1.7.10-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <type>jar</type>
         </dependency>
