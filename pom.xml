@@ -8,7 +8,7 @@
     <groupId>com.ryanmichela</groupId>
     <artifactId>GiantCaves</artifactId>
     <name>GiantCaves</name>
-    <version>1.7.10-R01</version>
+    <version>1.10.2-R0.1</version>
     <url>http://dev.bukkit.org/server-mods/giant-caves/</url>
     
     <properties>
@@ -47,15 +47,8 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <version>1.10.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics</artifactId>
-            <version>R6</version>
-            <scope>compile</scope>
             <type>jar</type>
         </dependency>
     </dependencies>
@@ -67,10 +60,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.5.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
@@ -79,7 +72,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
+                <version>2.4.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
