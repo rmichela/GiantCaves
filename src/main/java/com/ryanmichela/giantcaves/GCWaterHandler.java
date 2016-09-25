@@ -2,9 +2,8 @@ package com.ryanmichela.giantcaves;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_10_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -32,9 +31,10 @@ public class GCWaterHandler implements Listener {
         // flow continuously instead tick-by-tick. See nms.WorldGenLiquids line 59.
         Block b = event.getBlock();
         if (b.getType() == Material.STATIONARY_WATER || b.getType() == Material.STATIONARY_LAVA) {
-            boolean continuousFlowMode = ((CraftWorld)event.getBlock().getWorld()).getHandle().d;
+            //boolean continuousFlowMode = ReflectionUtil.getProtectedValue(((CraftWorld) event.getBlock().getWorld()).getHandle(), "d");
+            boolean continuousFlowMode = isContinuousFlowMode(event.getBlock().getWorld());
             if (continuousFlowMode) {
-                CraftChunk c = (CraftChunk)b.getChunk();
+                Chunk c = b.getChunk();
                 if (!randoms.containsKey(c)) {
                     randoms.put(c, new GCRandom(c, config));
                 }
@@ -47,5 +47,11 @@ public class GCWaterHandler implements Listener {
                 }
             }
         }
+    }
+
+    boolean isContinuousFlowMode(World world) {
+        Object handle = ReflectionUtil.getProtectedValue(world, "world");
+        Object d = ReflectionUtil.getProtectedValue(handle, "d");
+        return (boolean)d;
     }
 }

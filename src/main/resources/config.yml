@@ -6,4 +6,4 @@ worlds:
       cutoff : 62          # Minimum Perlin density cutoff (-100 to 100)
       miny   : 6           # Lower bound of cave zone
       maxy   : 50          # Uppoer bound of cave zone
-      debug  : false       # Turns on invert mode for experimenting with config values (true/false)
+      debug  : false       # Turns on debug mode to make caves easier to find (true/false)

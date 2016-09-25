@@ -1,7 +1,6 @@
 name: GiantCaves
-version: "1.7.10-R01"
+version: "1.10.2-R0.1"
 author: Deltahat
 main: com.ryanmichela.giantcaves.GCPlugin
 prefix: "GiantCaves"
 load: STARTUP
-loadbefore: [ Multiverse-Core, MyWorlds ]
