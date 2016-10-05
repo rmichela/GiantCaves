@@ -18,21 +18,24 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class GiantCavePopulator extends BlockPopulator {
 
-    public final Plugin plugin;
     private final Config config;
+    private final BlockFace[] updateAdjacent = {BlockFace.UP, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     // Material
     private final Material material;
 
     public GiantCavePopulator(Plugin plugin, Config config) {
-        this.plugin = plugin;
         this.config = config;
         material = Material.AIR;
         plugin.getServer().getPluginManager().registerEvents(new GCWaterHandler(config), plugin);
@@ -42,6 +45,8 @@ public class GiantCavePopulator extends BlockPopulator {
     public void populate(final World world, final Random random, final Chunk source) {
         GCRandom gcRandom = new GCRandom(source, config);
 
+        List<BlockState> toUpdate = new ArrayList<>(64);
+
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 for (int y = config.caveBandMax; y >= config.caveBandMin; y--) {
@@ -49,13 +54,26 @@ public class GiantCavePopulator extends BlockPopulator {
                         Block block = source.getBlock(x, y, z);
                         block.setType(material);
 
+                        for (BlockFace direction : updateAdjacent) {
+                            BlockState bs;
+                            bs = block.getRelative(direction).getState();
+                            if (!gcRandom.isInGiantCave(bs.getX(), bs.getY(), bs.getZ())) {
+                                toUpdate.add(bs);
+                            }
+                        }
+
                         if (config.debugMode) {
                             block = source.getBlock(x, 192, z);
-                            block.setType(Material.OBSIDIAN);
+                            block.setType(Material.GLASS);
                         }
                     }
                 }
             }
+        }
+
+        // force updates to adjacent blocks not in the cave
+        for (BlockState update : toUpdate) {
+            update.update(true, true);
         }
     }
 }
