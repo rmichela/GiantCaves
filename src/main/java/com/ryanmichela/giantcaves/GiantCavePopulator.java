@@ -30,6 +30,7 @@ import java.util.Random;
 public class GiantCavePopulator extends BlockPopulator {
 
     private final Config config;
+    private final Plugin plugin;
     private final BlockFace[] updateAdjacent = {BlockFace.UP, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     // Material
@@ -37,6 +38,7 @@ public class GiantCavePopulator extends BlockPopulator {
 
     public GiantCavePopulator(Plugin plugin, Config config) {
         this.config = config;
+        this.plugin = plugin;
         material = Material.AIR;
         plugin.getServer().getPluginManager().registerEvents(new GCWaterHandler(config), plugin);
     }
@@ -54,6 +56,7 @@ public class GiantCavePopulator extends BlockPopulator {
                         Block block = source.getBlock(x, y, z);
                         block.setType(material);
 
+                        // Mark adjacent blocks for update, iff they are not in the cave
                         for (BlockFace direction : updateAdjacent) {
                             BlockState bs;
                             bs = block.getRelative(direction).getState();
@@ -71,9 +74,24 @@ public class GiantCavePopulator extends BlockPopulator {
             }
         }
 
-        // force updates to adjacent blocks not in the cave
-        for (BlockState update : toUpdate) {
-            update.update(true, true);
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new BlockStateUpdater(toUpdate));
+    }
+
+    private class BlockStateUpdater implements Runnable {
+        private List<BlockState> toUpdate;
+
+        public BlockStateUpdater(List<BlockState> toUpdate) {
+            this.toUpdate = toUpdate;
+        }
+
+        @Override
+        public void run() {
+            for (BlockState bs : toUpdate) {
+                Material material = bs.getType();
+                if (material.hasGravity()) {
+                    bs.update(true, true);
+                }
+            }
         }
     }
 }
