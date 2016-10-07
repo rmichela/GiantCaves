@@ -35,19 +35,19 @@ public class GiantCavePopulator extends BlockPopulator {
 
     // Material
     private final Material material;
+    private final BlockToucher toucher;
 
     public GiantCavePopulator(Plugin plugin, Config config) {
         this.config = config;
         this.plugin = plugin;
         material = Material.AIR;
+        toucher = new BlockToucher(plugin);
         plugin.getServer().getPluginManager().registerEvents(new GCWaterHandler(config), plugin);
     }
 
     @Override
     public void populate(final World world, final Random random, final Chunk source) {
         GCRandom gcRandom = new GCRandom(source, config);
-
-        List<BlockState> toUpdate = new ArrayList<>(64);
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -58,10 +58,9 @@ public class GiantCavePopulator extends BlockPopulator {
 
                         // Mark adjacent blocks for update, iff they are not in the cave
                         for (BlockFace direction : updateAdjacent) {
-                            BlockState bs;
-                            bs = block.getRelative(direction).getState();
-                            if (!gcRandom.isInGiantCave(bs.getX(), bs.getY(), bs.getZ())) {
-                                toUpdate.add(bs);
+                            Block b = block.getRelative(direction);
+                            if (!gcRandom.isInGiantCave(b.getX(), b.getY(), b.getZ())) {
+                                toucher.touch(b);
                             }
                         }
 
@@ -70,26 +69,6 @@ public class GiantCavePopulator extends BlockPopulator {
                             block.setType(Material.GLASS);
                         }
                     }
-                }
-            }
-        }
-
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new BlockStateUpdater(toUpdate));
-    }
-
-    private class BlockStateUpdater implements Runnable {
-        private List<BlockState> toUpdate;
-
-        public BlockStateUpdater(List<BlockState> toUpdate) {
-            this.toUpdate = toUpdate;
-        }
-
-        @Override
-        public void run() {
-            for (BlockState bs : toUpdate) {
-                Material material = bs.getType();
-                if (material.hasGravity()) {
-                    bs.update(true, true);
                 }
             }
         }
