@@ -29,18 +29,6 @@
         <connection>scm:git:git://github.com/rmichela/${project.name}.git</connection>
         <url>https://github.com/rmichela/${project.name}</url>
     </scm>
-
-    <!-- Repositories -->
-    <repositories>
-        <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>Plugin Metrics</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
-    </repositories>
     
     <!-- Dependencies -->
     <dependencies>

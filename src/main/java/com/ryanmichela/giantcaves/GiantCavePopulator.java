@@ -19,19 +19,17 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class GiantCavePopulator extends BlockPopulator {
 
+    private final BlockFace[] faces = { BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
+
     private final Config config;
     private final Plugin plugin;
-    private final BlockFace[] updateAdjacent = {BlockFace.UP, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
     // Material
     private final Material material;
@@ -54,23 +52,68 @@ public class GiantCavePopulator extends BlockPopulator {
                 for (int y = config.caveBandMax; y >= config.caveBandMin; y--) {
                     if (gcRandom.isInGiantCave(x, y, z)) {
                         Block block = source.getBlock(x, y, z);
-                        block.setType(material);
-
-                        // Mark adjacent blocks for update, iff they are not in the cave
-                        for (BlockFace direction : updateAdjacent) {
-                            Block b = block.getRelative(direction);
-                            if (!gcRandom.isInGiantCave(b.getX(), b.getY(), b.getZ())) {
-                                toucher.touch(b);
+                        if (isHoldingBackOcean(block)) {
+                            // Support the ocean with stone to keep the bottom from falling out
+                            if (block.getType().hasGravity()) {
+                                block.setType(Material.STONE);
                             }
-                        }
+                        } else {
+                            block.setType(material);
 
-                        if (config.debugMode) {
-                            block = source.getBlock(x, 192, z);
-                            block.setType(Material.GLASS);
+                            // Mark adjacent blocks for update, iff they are not in the cave
+                            for (BlockFace direction : faces) {
+                                Block b = block.getRelative(direction);
+                                if (isWater(b) || isLava(b)) {
+                                    if (!gcRandom.isInGiantCave(b.getX(), b.getY(), b.getZ())) {
+                                        toucher.touch(b);
+                                    }
+                                }
+                            }
+
+                            if (config.debugMode) {
+                                block = source.getBlock(x, 192, z);
+                                block.setType(Material.GLASS);
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    private boolean isHoldingBackOcean(Block block) {
+        return isSurfaceWater(block) || isNextToSurfaceWater(block);
+    }
+
+    private boolean isNextToSurfaceWater(Block block) {
+        for (BlockFace face : faces) {
+            Block adjacent = block.getRelative(face);
+            if (isSurfaceWater(adjacent)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isSurfaceWater(Block block) {
+        // Walk the column of blocks above block looking sea level
+        while (isWater(block)) {
+            if (block.getY() >= block.getWorld().getSeaLevel() - 1) {
+                return true;
+            } else {
+                block = block.getRelative(BlockFace.UP);
+            }
+        }
+        return false;
+    }
+
+    private boolean isWater(Block block) {
+        Material material = block.getType();
+        return material == Material.WATER || material == Material.STATIONARY_WATER;
+    }
+
+    private boolean isLava(Block block) {
+        Material material = block.getType();
+        return material == Material.LAVA || material == Material.STATIONARY_LAVA;
     }
 }
