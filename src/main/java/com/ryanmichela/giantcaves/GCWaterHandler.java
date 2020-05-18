@@ -4,6 +4,8 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -30,8 +32,7 @@ public class GCWaterHandler implements Listener {
         // During chunk generation, nms.World.d is set to true. While true, liquids
         // flow continuously instead tick-by-tick. See nms.WorldGenLiquids line 59.
         Block b = event.getBlock();
-        if (b.getType() == Material.LEGACY_STATIONARY_WATER || b.getType() == Material.LEGACY_STATIONARY_LAVA) {
-            //boolean continuousFlowMode = ReflectionUtil.getProtectedValue(((CraftWorld) event.getBlock().getWorld()).getHandle(), "d");
+        if (isFluidSource(b)) {
             boolean continuousFlowMode = isContinuousFlowMode(event.getBlock().getWorld());
             if (continuousFlowMode) {
                 Chunk c = b.getChunk();
@@ -41,12 +42,23 @@ public class GCWaterHandler implements Listener {
                 GCRandom r = randoms.get(c);
 
                 if (r.isInGiantCave(b.getX(), b.getY(), b.getZ())) {
-                    if (b.getData() == 0) { // data value of 0 means source block
+                    if (isFluidSource(b)) {
                             event.setCancelled(true);
                         }
                 }
             }
         }
+    }
+
+    private boolean isFluidSource(Block b) {
+        BlockData blockData = b.getBlockData();
+        if (b instanceof Levelled) {
+            Levelled l = (Levelled) b;
+            if (l.getLevel() == 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     boolean isContinuousFlowMode(World world) {
