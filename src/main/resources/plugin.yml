@@ -1,6 +1,6 @@
 name: GiantCaves
-version: "1.10.2-R0.1"
+version: "${project.version}"
+api-version: "1.15"
 author: Deltahat
 main: com.ryanmichela.giantcaves.GCPlugin
-prefix: "GiantCaves"
 load: STARTUP

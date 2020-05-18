@@ -8,11 +8,13 @@
     <groupId>com.ryanmichela</groupId>
     <artifactId>GiantCaves</artifactId>
     <name>GiantCaves</name>
-    <version>2.0.0-R0.1</version>
+    <version>2.0.0-R0.1-SNAPSHOT</version>
     <url>http://dev.bukkit.org/server-mods/giant-caves/</url>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <rtr.allowExternalSnapshots>true</rtr.allowExternalSnapshots>
+        <tagNameFormat>@{project.version}</tagNameFormat>
     </properties>
 
     <!-- License -->
@@ -50,6 +52,12 @@
 
     <!-- Build -->
     <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <!-- Compile plugin -->
             <plugin>
@@ -65,27 +73,21 @@
             </plugin>
             <!-- Shade plugin -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <id>default</id>
+                        <!-- phase package -->
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.bukkit:bukkit</exclude>
-                                </excludes>
-                            </artifactSet>
+                            <minimizeJar>true</minimizeJar>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
-    <packaging>jar</packaging>
 </project>
