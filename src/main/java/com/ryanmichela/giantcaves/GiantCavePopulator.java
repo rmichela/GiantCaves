@@ -94,7 +94,8 @@ public class GiantCavePopulator extends BlockPopulator {
         for (BlockFace face : faces) {
             Block adjacent = block.getRelative(face);
             // Don't look at neighboring chunks to prevent runaway chunk generation
-            if (block.getChunk() == adjacent.getChunk()) {
+            // Use block coordinates to compute chunk coordinates to prevent loading chunks
+            if (block.getX() >> 4 == adjacent.getX() >> 4 && block.getZ() >> 4 == adjacent.getZ() >> 4) {
                 if (isSurfaceWater(adjacent)) {
                     return true;
                 }
