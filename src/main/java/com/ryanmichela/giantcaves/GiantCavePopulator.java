@@ -51,16 +51,16 @@ public class GiantCavePopulator extends BlockPopulator {
                 for (int y = config.caveBandMax; y >= config.caveBandMin; y--) {
                     if (gcRandom.isInGiantCave(x, y, z)) {
                         Block block = source.getBlock(x, y, z);
-                        Block blockUp = block.getRelative(BlockFace.UP);
-                        Block blockUp2 = blockUp.getRelative(BlockFace.UP);
+                        Block blockUp1 = block.getRelative(BlockFace.UP);
+                        Block blockUp2 = blockUp1.getRelative(BlockFace.UP);
                         Block blockUp3 = blockUp2.getRelative(BlockFace.UP);
-                        if (isHoldingBackOcean(block) || isHoldingBackOcean(blockUp)) {
+                        if (isHoldingBackOcean(block) || isHoldingBackOcean(blockUp1)) {
                             continue;
                         } else if (isHoldingBackOcean(blockUp2) || isHoldingBackOcean(blockUp3)) {
                             // Support the ocean with stone to keep the bottom from falling out
-                            if (block.getType().hasGravity()) {
+                            if (block.getType().hasGravity()) { // sand or gravel
                                 block.setType(Material.STONE);
-                                blockUp.setType(Material.STONE);
+                                blockUp1.setType(Material.STONE);
                             }
                         } else {
                             block.setType(material);
@@ -93,8 +93,11 @@ public class GiantCavePopulator extends BlockPopulator {
     private boolean isNextToSurfaceWater(Block block) {
         for (BlockFace face : faces) {
             Block adjacent = block.getRelative(face);
-            if (isSurfaceWater(adjacent)) {
-                return true;
+            // Don't look at neighboring chunks to prevent runaway chunk generation
+            if (block.getChunk() == adjacent.getChunk()) {
+                if (isSurfaceWater(adjacent)) {
+                    return true;
+                }
             }
         }
         return false;
