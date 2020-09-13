@@ -1,6 +1,7 @@
 package com.ryanmichela.giantcaves;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayDeque;
@@ -13,10 +14,11 @@ import java.util.Queue;
  * game loop is single threaded, so it doesn't matter. :)
  */
 public class BlockToucher {
+    private final BlockFace[] faces = { BlockFace.SELF, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
     private static final int TOUCHES_PER_TICK = 50;
 
-    private Plugin plugin;
-    private Queue<Block> needsTouching = new ArrayDeque<>();
+    private final Plugin plugin;
+    private final Queue<Block> needsTouching = new ArrayDeque<>();
     private boolean running;
 
     public BlockToucher(Plugin plugin) {
@@ -41,7 +43,9 @@ public class BlockToucher {
                 for (int i = 0; i < TOUCHES_PER_TICK; i++) {
                     if (!needsTouching.isEmpty()) {
                         Block block = needsTouching.remove();
-                        block.getState().update(true, true);
+                        for (BlockFace face : faces) {
+                            block.getRelative(face).getState().update(true, true);
+                        }
                     }
                 }
 
