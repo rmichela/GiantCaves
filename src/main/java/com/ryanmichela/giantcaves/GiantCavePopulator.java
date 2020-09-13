@@ -63,7 +63,7 @@ public class GiantCavePopulator extends BlockPopulator {
                                 blockUp1.setType(Material.STONE, false);
                             }
                         } else {
-                            block.setType(material);
+                            block.setType(material, false);
                             toucher.touch(block);
 
                             if (config.debugMode) {
