@@ -41,9 +41,7 @@ public class BlockToucher {
                 for (int i = 0; i < TOUCHES_PER_TICK; i++) {
                     if (!needsTouching.isEmpty()) {
                         Block block = needsTouching.remove();
-                        if (block.getType().hasGravity()) {
-                            block.getState().update(true, true);
-                        }
+                        block.getState().update(true, true);
                     }
                 }
 

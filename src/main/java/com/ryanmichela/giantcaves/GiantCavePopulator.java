@@ -59,21 +59,12 @@ public class GiantCavePopulator extends BlockPopulator {
                         } else if (isHoldingBackOcean(blockUp2) || isHoldingBackOcean(blockUp3)) {
                             // Support the ocean with stone to keep the bottom from falling out
                             if (block.getType().hasGravity()) { // sand or gravel
-                                block.setType(Material.STONE);
-                                blockUp1.setType(Material.STONE);
+                                block.setType(Material.STONE, false);
+                                blockUp1.setType(Material.STONE, false);
                             }
                         } else {
                             block.setType(material);
-
-                            // Mark adjacent blocks for update, iff they are not in the cave
-                            for (BlockFace direction : faces) {
-                                Block b = block.getRelative(direction);
-                                if (isWater(b) || isLava(b)) {
-                                    if (!gcRandom.isInGiantCave(b.getX(), b.getY(), b.getZ())) {
-                                        toucher.touch(b);
-                                    }
-                                }
-                            }
+                            toucher.touch(block);
 
                             if (config.debugMode) {
                                 block = source.getBlock(x, 192, z);
