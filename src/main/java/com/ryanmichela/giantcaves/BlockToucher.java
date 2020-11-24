@@ -28,7 +28,7 @@ public class BlockToucher {
     public void touch(Block block) {
         needsTouching.add(block);
 
-        if (!running) {
+        if (!running && plugin.isEnabled()) {
             running = true;
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new TouchTask());
         }
@@ -49,7 +49,9 @@ public class BlockToucher {
                     }
                 }
 
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this);
+                if (plugin.isEnabled()) {
+                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this);
+                }
             }
         }
     }
